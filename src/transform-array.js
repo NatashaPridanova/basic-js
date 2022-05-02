@@ -13,11 +13,58 @@ const { NotImplementedError } = require('../extensions/index.js');
  * transform([1, 2, 3, '--discard-prev', 4, 5]) => [1, 2, 4, 5]
  * 
  */
-function transform(/* arr */) {
-  throw new NotImplementedError('Not implemented');
-  // remove line with error and write your code here
+function transform(arr) {
+    let transformedArr = [];
+    if (Array.isArray(arr)) {
+        let indexToDiscard;
+        let indexToDouble;
+
+        arr.forEach((el, index) => {
+            if (typeof el == 'string') {
+                switch (el) {
+                    case '--double-next':
+                        {
+                            if (index < arr.length - 1) {
+                                transformedArr.push(arr[index + 1]);
+                                indexToDouble = index;
+                            }
+
+                        }
+                        break;
+                    case '--double-prev':
+                        {
+                            if (index !== 0 && index !== indexToDiscard + 1) {
+                                transformedArr.push(arr[index - 1]);
+                            }
+                            break;
+                        }
+                    case '--discard-next':
+                        {
+                            indexToDiscard = index + 1;
+                            break;
+                        }
+                    case '--discard-prev':
+                        {
+                            if (index !== 0 && index !== indexToDiscard + 1) {
+                                transformedArr.pop();
+                            }
+                            break;
+                        }
+                    default:
+                        transformedArr.push(el);
+
+                }
+            } else {
+                if (index !== indexToDiscard) {
+                    transformedArr.push(el);
+                }
+            }
+        })
+        return (transformedArr);
+    } else throw new Error("'arr' parameter must be an instance of the Array!");
 }
 
 module.exports = {
-  transform
+    transform
 };
+transform([1, 2, 3, '--double-next', 1337, '--double-prev', 4, 5]);
